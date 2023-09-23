@@ -32,7 +32,7 @@ public class DriversController : CrudController<Driver, int, DriverResource, Dri
         _licenseService = licenseService;
     }
     
-    [NonAction]
+    [HttpGet]
     public override Task<IEnumerable<DriverResource>> GetAllAsync()
     {
         return base.GetAllAsync();

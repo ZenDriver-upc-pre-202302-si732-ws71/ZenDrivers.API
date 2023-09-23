@@ -67,5 +67,5 @@ public class UsersController : ControllerBase
         await _accountService.DeleteAsync(id);
         return Ok(new { message = "User deleted succesfully" });
     }  
-
+    
 }
