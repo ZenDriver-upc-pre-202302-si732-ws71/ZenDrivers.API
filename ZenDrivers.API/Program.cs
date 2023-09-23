@@ -123,6 +123,10 @@ builder.Services.AddScoped<ILicenseRepository, LicenseRepository>();
 builder.Services.AddScoped<ILicenseService, LicenseService>();
 builder.Services.AddScoped<IGenericMap<License, License>, LicenseMap>();
 
+builder.Services.AddScoped<ILicenseCategoryRepository, LicenseCategoryRepository>();
+builder.Services.AddScoped<ILicenseCategoryService, LicenseCategoryService>();
+builder.Services.AddScoped<IGenericMap<LicenseCategory, LicenseCategory>, LicenseCategoryMap>();
+
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<IGenericMap<Driver, Driver>, DriverMap>();

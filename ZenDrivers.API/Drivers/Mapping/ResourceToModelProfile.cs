@@ -11,10 +11,12 @@ public class ResourceToModelProfile: Profile
     {
         CreateMap<DriverSaveResource, Driver>();
         CreateMap<LicenseSaveResource, License>();
+        CreateMap<LicenseCategorySaveResource, License>();
         CreateMap<DriverExperienceSaveResource, DriverExperience>();
         
         CreateMap<DriverUpdateResource, Driver>();
         CreateMap<LicenseUpdateResource, License>();
+        CreateMap<LicenseCategoryUpdateResource, LicenseCategory>();
         CreateMap<DriverExperienceUpdateResource, DriverExperience>();
     }
 }

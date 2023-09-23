@@ -4,5 +4,4 @@ namespace ZenDrivers.API.Drivers.Resources.Update;
 
 public class LicenseUpdateResource
 {
-    
 }

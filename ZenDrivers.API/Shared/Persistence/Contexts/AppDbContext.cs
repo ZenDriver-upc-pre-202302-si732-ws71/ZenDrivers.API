@@ -20,6 +20,7 @@ public class AppDbContext : DbContext
     public DbSet<Driver> Drivers { get; set; }
     
     public DbSet<Message> Messages { get; set; }
+    public DbSet<LicenseCategory> LicenseCategories { get; set; }
     
     public AppDbContext(DbContextOptions options) : base (options)
     {
@@ -99,6 +100,8 @@ public class AppDbContext : DbContext
         {
             e.ToTable("Licenses");
             e.HasKey(l => l.Id);
+            e.Property(l => l.Start).IsRequired();
+            e.Property(l => l.End).IsRequired();
             e.Navigation(l => l.Category).AutoInclude();
         });
 
