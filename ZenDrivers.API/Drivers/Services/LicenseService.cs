@@ -15,8 +15,9 @@ public class LicenseService : CrudService<License, int>, ILicenseService
         _licenseRepository = licenseRepository;
     }
 
-    public async Task<IEnumerable<License>> FindByCategoryNameAsync(string categoryName)
-    {
-        return await _licenseRepository.FindByCategoryNameAsync(categoryName);
-    }
+    public async Task<IEnumerable<License>> FindByCategoryNameAsync(string categoryName) =>
+        await _licenseRepository.FindByCategoryNameAsync(categoryName);
+
+    public async Task<IEnumerable<License>> FindByDriverIdAsync(int driverId) =>
+        await _licenseRepository.FindByDriverIdAsync(driverId);
 }

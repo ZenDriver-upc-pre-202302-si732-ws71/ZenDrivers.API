@@ -11,4 +11,9 @@ public class LicenseCategoryRepository : CrudRepository<LicenseCategory, int>, I
     public LicenseCategoryRepository(AppDbContext context) : base(context.LicenseCategories)
     {
     }
+
+    public LicenseCategory? FindById(int id) => DataSet.Find(id);
+
+    public Task<LicenseCategory?> FindByNameAsync(string name) =>
+        DataSet.Where(c => c.Name == name).FirstOrDefaultAsync();
 }

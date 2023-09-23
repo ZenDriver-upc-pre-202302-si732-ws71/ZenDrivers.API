@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Finanzas.API.Shared.Domain.Services.Communication;
 using Microsoft.AspNetCore.Mvc;
 using ZenDrivers.API.Drivers.Domain.Model;
 using ZenDrivers.API.Drivers.Domain.Services;
@@ -7,7 +8,6 @@ using ZenDrivers.API.Drivers.Resources.Save;
 using ZenDrivers.API.Drivers.Resources.Update;
 using ZenDrivers.API.Security.Authorization.Attributes;
 using ZenDrivers.API.Shared.Controller;
-using ZenDrivers.API.Shared.Domain.Services;
 
 namespace ZenDrivers.API.Drivers.Controllers;
 
@@ -16,8 +16,10 @@ namespace ZenDrivers.API.Drivers.Controllers;
 [Route("api/v1/[controller]")]
 public class LicenseCategoriesController : CrudController<LicenseCategory, int, LicenseCategoryResource, LicenseCategorySaveResource, LicenseCategoryUpdateResource>
 {
+    private readonly ILicenseCategoryService _licenseCategoryService;
     public LicenseCategoriesController(ILicenseCategoryService licenseCategoryService, IMapper mapper) : base(licenseCategoryService, mapper)
     {
+        _licenseCategoryService = licenseCategoryService;
     }
 
     [HttpGet]
@@ -33,20 +35,24 @@ public class LicenseCategoriesController : CrudController<LicenseCategory, int, 
     }
 
     [HttpPost]
-    public override Task<IActionResult> PostAsync(LicenseCategorySaveResource resource)
+    public override async Task<IActionResult> PostAsync(LicenseCategorySaveResource resource)
     {
-        return base.PostAsync(resource);
+        var category = await _licenseCategoryService.FindByNameAsync(resource.Name);
+        if (category != null)
+            return BadRequest(ErrorResponse.Of("Category already exists"));
+        
+        return await base.PostAsync(resource);
     }
 
     [HttpPut("{id:int}")]
-    public override Task<IActionResult> PutAsync(int id, LicenseCategoryUpdateResource resource)
+    public override async Task<IActionResult> PutAsync(int id, LicenseCategoryUpdateResource resource)
     {
-        return base.PutAsync(id, resource);
+        return await base.PutAsync(id, resource);
     }
 
     [HttpDelete("{id:int}")]
-    public override Task<IActionResult> DeleteAsync(int id)
+    public override async Task<IActionResult> DeleteAsync(int id)
     {
-        return base.DeleteAsync(id);
+        return await base.DeleteAsync(id);
     }
 }

@@ -5,5 +5,6 @@ namespace ZenDrivers.API.Drivers.Domain.Services;
 
 public interface ILicenseCategoryService : ICrudService<LicenseCategory, int>
 {
-    
+    public LicenseCategory? FindById(int id);
+    public Task<LicenseCategory?> FindByNameAsync(string name);
 }

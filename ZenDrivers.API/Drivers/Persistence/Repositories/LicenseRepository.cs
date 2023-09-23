@@ -12,8 +12,9 @@ public class LicenseRepository : CrudRepository<License, int>, ILicenseRepositor
     {
     }
 
-    public async Task<IEnumerable<License>> FindByCategoryNameAsync(string categoryName)
-    {
-        return await DataSet.Where(l => l.Category.Name == categoryName).ToListAsync();
-    }
+    public async Task<IEnumerable<License>> FindByCategoryNameAsync(string categoryName) =>
+        await DataSet.Where(l => l.Category.Name == categoryName).ToListAsync();
+
+    public async Task<IEnumerable<License>> FindByDriverIdAsync(int driverId) =>
+        await DataSet.Where(l => l.DriverId == driverId).ToListAsync();
 }

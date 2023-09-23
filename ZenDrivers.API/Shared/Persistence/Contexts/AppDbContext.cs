@@ -103,6 +103,7 @@ public class AppDbContext : DbContext
             e.Property(l => l.Start).IsRequired();
             e.Property(l => l.End).IsRequired();
             e.Navigation(l => l.Category).AutoInclude();
+            e.Navigation(l => l.Driver).AutoInclude();
         });
 
         builder.Entity<DriverExperience>(e =>
@@ -131,8 +132,8 @@ public class AppDbContext : DbContext
 
         builder.Entity<Driver>()
             .HasMany<License>()
-            .WithMany()
-            .UsingEntity("LicenseDrivers");
+            .WithOne(l => l.Driver)
+            .HasForeignKey(l => l.DriverId);
         
         builder.Entity<Recruiter>()
             .HasMany<Post>()

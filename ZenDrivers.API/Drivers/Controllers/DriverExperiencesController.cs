@@ -6,6 +6,7 @@ using ZenDrivers.API.Drivers.Resources;
 using ZenDrivers.API.Drivers.Resources.Save;
 using ZenDrivers.API.Drivers.Resources.Update;
 using ZenDrivers.API.Security.Authorization.Attributes;
+using ZenDrivers.API.Security.Domain.Models;
 using ZenDrivers.API.Security.Domain.Services;
 using ZenDrivers.API.Shared.Controller;
 using ZenDrivers.API.Shared.Domain.Enums;
@@ -36,7 +37,17 @@ public class DriverExperiencesController : CrudController<DriverExperience, int,
     {
         return await base.GetByIdAsync(id);
     }
-    
+
+    protected override DriverExperience? FromSaveResourceToEntity(DriverExperienceSaveResource resource)
+    {
+        var entity = base.FromSaveResourceToEntity(resource);
+        if (entity == null)
+            return entity;
+        if (HttpContext.Items["User"] is Account account)
+            entity.DriverId = account.Driver!.Id;
+        return entity;
+    }
+
     [Authorize(UserType.Driver)]
     [HttpPost]
     public override async Task<IActionResult> PostAsync(DriverExperienceSaveResource resource)

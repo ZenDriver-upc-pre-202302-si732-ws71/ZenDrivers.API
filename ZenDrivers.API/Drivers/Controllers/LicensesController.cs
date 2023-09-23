@@ -6,7 +6,9 @@ using ZenDrivers.API.Drivers.Resources;
 using ZenDrivers.API.Drivers.Resources.Save;
 using ZenDrivers.API.Drivers.Resources.Update;
 using ZenDrivers.API.Security.Authorization.Attributes;
+using ZenDrivers.API.Security.Domain.Models;
 using ZenDrivers.API.Shared.Controller;
+using ZenDrivers.API.Shared.Domain.Enums;
 
 namespace ZenDrivers.API.Drivers.Controllers;
 
@@ -16,9 +18,11 @@ namespace ZenDrivers.API.Drivers.Controllers;
 public class LicensesController : CrudController<License, int, LicenseResource, LicenseSaveResource, LicenseUpdateResource>
 {
     private readonly ILicenseService _licenseService;
-    public LicensesController(ILicenseService licenseService, IMapper mapper) : base(licenseService, mapper)
+    private readonly ILicenseCategoryService _licenseCategoryService;
+    public LicensesController(ILicenseService licenseService, IMapper mapper, ILicenseCategoryService licenseCategoryService) : base(licenseService, mapper)
     {
         _licenseService = licenseService;
+        _licenseCategoryService = licenseCategoryService;
     }
 
     [HttpGet]
@@ -33,6 +37,19 @@ public class LicensesController : CrudController<License, int, LicenseResource, 
         return await base.GetByIdAsync(id);
     }
 
+    protected override License? FromSaveResourceToEntity(LicenseSaveResource resource)
+    {
+        var entity =  base.FromSaveResourceToEntity(resource);
+        if (entity == null)
+            return entity;
+        if (HttpContext.Items["User"] is Account account)
+            entity.DriverId = account.Driver!.Id;
+        if(_licenseCategoryService.FindById(resource.CategoryId) is { } category)
+            entity.Category = category;
+        return entity;
+    }
+
+    [Authorize(UserType.Driver)]
     [HttpPost]
     public override async Task<IActionResult> PostAsync(LicenseSaveResource resource)
     {
