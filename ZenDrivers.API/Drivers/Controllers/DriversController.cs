@@ -59,17 +59,17 @@ public class DriversController : CrudController<Driver, int, DriverResource, Dri
     }
 
     [HttpPost("find")]
-    public async Task<IEnumerable<AccountResource>> FindDriverBy([FromBody] FindDriverRequest request)
+    public async Task<IEnumerable<DriverResource>> FindDriverBy([FromBody] FindDriverRequest request)
     {
         var drivers = await _accountService.FindByUserRoleAsync(UserType.Driver);
-        var resources = new List<AccountResource>();
+        var resources = new List<DriverResource>();
         foreach (var driver in drivers)
         {
             var experiences = await _driverExperienceService.FindAllByDriverIdAsync(driver.Driver!.Id);
             var licenses = await _licenseService.FindByDriverIdAsync(driver.Driver!.Id);
 
             if (!licenses.IsNullOrEmpty() && (experiences.Any(e => e.YearsOfExperience() >= request.YearsOfExperience) || request.YearsOfExperience == 0))
-                resources.Add(Mapper.Map<AccountResource>(driver));
+                resources.Add(Mapper.Map<DriverResource>(driver.Driver));
         }
 
         return resources;
