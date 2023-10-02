@@ -55,24 +55,29 @@ public class Tests
                 )
             .Build();
 
-        
-        _mockAccountRepository.Setup(repo => repo.ExistsByUsername(request.Username)).Returns(false);
-        
-        _mockMapper.Setup(mapper => mapper.Map<Account>(request))
-            .Returns(
-                new AccountBuilder()
-                    .WithUsername("username")
-                    .WithPasswordHash(BCryptNet.HashPassword(request.Password))
-                    .WithRole(UserType.Driver)
-                    .WithDriver(
-                        new DriverBuilder()
-                            .WithAddress("lima")
-                            .Build()
-                        )
+        var account = new AccountBuilder()
+            .WithUsername("username")
+            .WithPasswordHash(BCryptNet.HashPassword(request.Password))
+            .WithRole(UserType.Driver)
+            .WithDriver(
+                new DriverBuilder()
+                    .WithAddress("lima")
                     .Build()
-            );
+            )
+            .Build();
+
         
-        _mockAccountRepository.Setup(repo => repo.AddAsync(It.IsAny<Account>())).Returns(Task.CompletedTask);
+        _mockAccountRepository
+            .Setup(repo => repo.ExistsByUsername(request.Username))
+            .Returns(false);
+        
+        _mockMapper
+            .Setup(mapper => mapper.Map<Account>(request))
+            .Returns(account);
+        
+        _mockAccountRepository
+            .Setup(repo => repo.AddAsync(account))
+            .Returns(Task.CompletedTask);
         
 
         // Act

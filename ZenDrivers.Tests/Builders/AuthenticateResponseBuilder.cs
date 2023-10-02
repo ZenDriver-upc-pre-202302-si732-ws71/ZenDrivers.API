@@ -14,8 +14,8 @@ public class AuthenticateResponseBuilder
         new AuthenticateResponse
         {
             Id = _id,
-            FirstName = _firstName,
-            LastName = _lastName,
+            Firstname = _firstName,
+            Lastname = _lastName,
             Username = _username,
             Token = _token
         };

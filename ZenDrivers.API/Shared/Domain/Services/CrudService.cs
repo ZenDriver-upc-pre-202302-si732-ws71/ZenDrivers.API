@@ -25,6 +25,20 @@ public class CrudService<TEntity, TId> : ICrudService<TEntity, TId> where TEntit
         return await this._crudRepository.ListAsync();
     }
 
+    protected async Task<BaseResponse<TEntity>> Remove(TEntity entity)
+    {
+        try
+        {
+            this._crudRepository.Remove(entity);
+            await UnitOfWork.CompleteAsync();
+            return Entity(entity);
+        }
+        catch (Exception e)
+        {
+            return ErrorMessage("deleting", e);
+        }
+    }
+
     public virtual async Task<BaseResponse<TEntity>> SaveAsync(TEntity entity)
     {
         try
@@ -65,17 +79,8 @@ public class CrudService<TEntity, TId> : ICrudService<TEntity, TId> where TEntit
         var existEntity = await this._crudRepository.FindByIdAsync(id);
         if(existEntity == null)
             return BaseResponse<TEntity>.Of(this.EntityName + " Not Found");
-        try
-        {
-            this._crudRepository.Remove(existEntity);
-            await UnitOfWork.CompleteAsync();
-            return Entity(existEntity);
-        }
-        catch (Exception e)
-        {
-            return ErrorMessage("deleting", e);
-        }
-        
+
+        return await Remove(existEntity);
     }
 
     public async Task<BaseResponse<TEntity>> FindByIdAsync(TId id)

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using ZenDrivers.API.Recruiters.Domain.Model;
 using ZenDrivers.API.Security.Authorization.Handlers.Interfaces;
 using ZenDrivers.API.Security.Domain.Models;
@@ -42,6 +43,16 @@ public class AccountService : IAccountService
         return response;
     }
 
+    public async Task<Account?>  ValidateAsync(ValidationRequest request)
+    {
+        if (_jwtHandler.ValidateToken(request.Token) is not { } userId)
+            return null;
+        if (await _accountRepository.FindByIdAsync(userId) is { } account && account.Username == request.Username)
+            return account;
+        
+        return null;
+    }
+
     public async Task<IEnumerable<Account>> ListAsync()
     {
         return await _accountRepository.ListAsync();
@@ -77,6 +88,12 @@ public class AccountService : IAccountService
             default:
                 throw new AppException("Invalid account information. Account role not valid");
         }
+        
+        if (!account.ValidNames())
+            throw new AppException("Invalid firstname or lastname");
+        if (!account.ValidPhone())
+            throw new AppException("Invalid phone number");
+        
         //Hash password
         account.PasswordHash = BCryptNet.HashPassword(request.Password);
         // Save User
@@ -106,6 +123,11 @@ public class AccountService : IAccountService
 
         //Copy model to user and save
         _mapper.Map(request, user);
+        
+        if (!user.ValidNames())
+            throw new AppException("Invalid firstname or lastname");
+        if (!user.ValidPhone())
+            throw new AppException("Invalid phone number");
         
         switch (user.Role)
         {

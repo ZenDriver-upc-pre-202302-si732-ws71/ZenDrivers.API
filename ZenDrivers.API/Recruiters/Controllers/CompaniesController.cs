@@ -21,6 +21,7 @@ public class CompaniesController : CrudController<Company, int, CompanyResource,
         _companyService = companyService;
     }
     
+    [AllowAnonymous]
     [HttpGet]
     public override async Task<IEnumerable<CompanyResource>> GetAllAsync()
     {

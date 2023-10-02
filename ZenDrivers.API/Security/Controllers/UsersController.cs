@@ -5,6 +5,7 @@ using ZenDrivers.API.Security.Domain.Models;
 using ZenDrivers.API.Security.Domain.Services;
 using ZenDrivers.API.Security.Domain.Services.Communication;
 using ZenDrivers.API.Security.Resources;
+using ZenDrivers.API.Shared.Domain.Services.Communication;
 
 namespace ZenDrivers.API.Security.Controllers;
 
@@ -36,6 +37,16 @@ public class UsersController : ControllerBase
     {
         await _accountService.RegisterAsync(request);
         return Ok(new { message = "Registration successfull" });
+    }
+
+    [AllowAnonymous]
+    [HttpPost("validate")]
+    public async Task<IActionResult> Validate(ValidationRequest request)
+    {
+        if (await _accountService.ValidateAsync(request) is { } _)
+            return Ok(ErrorResponse.Of("The token and username are valid"));
+
+        return BadRequest(ErrorResponse.Of("Invalid token or username"));
     }
 
     [HttpGet]

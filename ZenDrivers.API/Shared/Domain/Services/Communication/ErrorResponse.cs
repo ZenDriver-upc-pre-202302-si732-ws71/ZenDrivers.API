@@ -1,4 +1,4 @@
-﻿namespace Finanzas.API.Shared.Domain.Services.Communication;
+﻿namespace ZenDrivers.API.Shared.Domain.Services.Communication;
 
 public class ErrorResponse
 {

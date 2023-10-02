@@ -139,6 +139,14 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IGenericMap<Message, Message>, MessageMap>();
 
+builder.Services.AddScoped<ILikeRepository, LikeRepository>();
+builder.Services.AddScoped<ILikeService, LikeService>();
+builder.Services.AddScoped<IGenericMap<Like, Like>, LikeMap>();
+
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IGenericMap<Comment, Comment>, CommentMap>();
+
 //AutoMapper Configuration
 
 builder.Services.AddAutoMapper(

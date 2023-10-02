@@ -15,11 +15,12 @@ public class RegisterRequest
     public string Username { get; set; } = null!;
     [Required]
     public string Password { get; set; } = null!;
-    
 
     public string Phone { get; set; } = null!;
     [Required] 
     public string Role { get; set; } = null!;
+
+    public string? ImageUrl { get; set; }
 
     public RecruiterSaveResource? Recruiter { get; set; }
     public DriverSaveResource? Driver { get; set; }

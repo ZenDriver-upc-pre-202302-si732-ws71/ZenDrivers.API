@@ -1,4 +1,5 @@
-﻿using ZenDrivers.API.Security.Domain.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using ZenDrivers.API.Security.Domain.Models;
 using ZenDrivers.API.Security.Domain.Services.Communication;
 using ZenDrivers.API.Shared.Domain.Enums;
 
@@ -6,6 +7,7 @@ namespace ZenDrivers.API.Security.Domain.Services;
 public interface IAccountService
 {
     Task<AuthenticateResponse> Authenticate(AuthenticateRequest model);
+    Task<Account?> ValidateAsync(ValidationRequest request);    
     Task<IEnumerable<Account>> ListAsync();
     Task<Account> GetByIdAsync(int id);
     Task RegisterAsync(RegisterRequest model);

@@ -1,13 +1,10 @@
-﻿using ZenDrivers.API.Shared.Domain.Models;
+﻿using ZenDrivers.API.Communication.Resources;
+using ZenDrivers.API.Shared.Domain.Models;
 
 namespace ZenDrivers.API.Recruiters.Resources;
 
-public class PostResource : IBaseEntity<int>
+public class PostResource : PostSimpleResource
 {
-    public int Id { get; set; }
-    public string Title { get; set; } = null!;
-    public string Description { get; set; } = null!;
-    public string Image { get; set; } = null!;
-    public DateTime Date { get; set; }
-    public RecruiterResource Recruiter { get; set; } = null!;
+    public IEnumerable<LikeResource> Likes { get; set; } = null!;
+    public IEnumerable<CommentResource> Comments { get; set; } = null!;
 }

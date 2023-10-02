@@ -20,7 +20,9 @@ public class AppDbContext : DbContext
     public DbSet<Driver> Drivers { get; set; }
     
     public DbSet<Message> Messages { get; set; }
+    public DbSet<Like> PostLikes { get; set; }
     public DbSet<LicenseCategory> LicenseCategories { get; set; }
+    public DbSet<Comment> PostsComments { get; set; }
     
     public AppDbContext(DbContextOptions options) : base (options)
     {
@@ -46,6 +48,7 @@ public class AppDbContext : DbContext
                 .HasMaxLength(10)
                 .HasConversion(v => v.ToString(),
                     v => (UserType) Enum.Parse(typeof(UserType), v));
+            e.Property(a => a.ImageUrl);
             e.Navigation(a => a.Driver).AutoInclude();
             e.Navigation(a => a.Recruiter).AutoInclude();
         });
@@ -74,9 +77,11 @@ public class AppDbContext : DbContext
             e.HasKey(p => p.Id);
             e.Property(p => p.Title).IsRequired();
             e.Property(p => p.Description).IsRequired();
-            e.Property(p => p.Date).HasDefaultValue(DateTime.Now);
+            e.Property(p => p.Date);
             e.Property(p => p.Image);
             e.Navigation(p => p.Recruiter).AutoInclude();
+            e.Navigation(p => p.Likes).AutoInclude();
+            e.Navigation(p => p.Comments).AutoInclude();
         });
 
         builder.Entity<Company>(e =>
@@ -120,7 +125,25 @@ public class AppDbContext : DbContext
             e.ToTable("Messages");
             e.HasKey(m => m.Id);
             e.Property(m => m.Content).IsRequired();
-            e.Property(m => m.Date).HasDefaultValue(DateTime.Now);
+            e.Property(m => m.Date);
+        });
+
+        builder.Entity<Like>(e =>
+        {
+            e.ToTable("PostLikes");
+            e.HasKey(l => l.Id);
+            e.Navigation(l => l.Account).AutoInclude();
+            e.Navigation(l => l.Post).AutoInclude();
+        });
+
+        builder.Entity<Comment>(e =>
+        {
+            e.ToTable("PostComments");
+            e.HasKey(c => c.Id);
+            e.Property(c => c.Content).IsRequired();
+            e.Property(c => c.Date);
+            e.Navigation(c => c.Post).AutoInclude();
+            e.Navigation(c => c.Account).AutoInclude();
         });
         
         // Relations
@@ -152,7 +175,6 @@ public class AppDbContext : DbContext
             .WithOne(a => a.Driver)
             .HasForeignKey<Driver>(d => d.AccountId)
             .OnDelete(DeleteBehavior.Cascade);
-        
 
         builder.Entity<Recruiter>()
             .HasOne<Company>()
@@ -176,6 +198,31 @@ public class AppDbContext : DbContext
             .WithOne(m => m.Sender)
             .HasForeignKey(m => m.SenderId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Account>()
+            .HasMany<Like>()
+            .WithOne(l => l.Account)
+            .HasForeignKey(l => l.AccountId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Account>()
+            .HasMany<Comment>()
+            .WithOne(c => c.Account)
+            .HasForeignKey(c => c.AccountId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Post>()
+            .HasMany(p => p.Likes)
+            .WithOne(l => l.Post)
+            .HasForeignKey(l => l.PostId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Post>()
+            .HasMany(p => p.Comments)
+            .WithOne(c => c.Post)
+            .HasForeignKey(c => c.PostId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         
         //Apply Snake Case Naming Convention
         builder.UseSnakeCaseNamingConvention();

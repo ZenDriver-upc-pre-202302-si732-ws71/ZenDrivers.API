@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using AutoMapper;
-using Finanzas.API.Shared.Domain.Services.Communication;
 using Microsoft.AspNetCore.Mvc;
 using ZenDrivers.API.Recruiters.Domain.Model;
 using ZenDrivers.API.Recruiters.Domain.Services;

@@ -7,6 +7,10 @@ namespace ZenDrivers.API.Communication.Domain.Model;
 
 public class Message : MessageResource
 {
+    public Message()
+    {
+        Date = DateTime.Now;
+    }
     public new Account Receiver { get; set; } = null!;
     public int ReceiverId { get; set; }
     public new Account Sender { get; set; } = null!;

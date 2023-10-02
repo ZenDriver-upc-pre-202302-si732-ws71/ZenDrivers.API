@@ -11,6 +11,7 @@ public class AccountResource
     public string Username { get; set; } = null!;
     public string Phone { get; set; } = null!;
     public string Role { get; set; } = null!;
+    public string? ImageUrl { get; set; }
     
     public AccountRecruiterResource? Recruiter { get; set; }
     public AccountDriverResource? Driver { get; set; }

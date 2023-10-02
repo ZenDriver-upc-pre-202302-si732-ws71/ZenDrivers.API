@@ -1,4 +1,5 @@
-﻿using ZenDrivers.API.Drivers.Resources.Update;
+﻿using System.ComponentModel.DataAnnotations;
+using ZenDrivers.API.Drivers.Resources.Update;
 using ZenDrivers.API.Recruiters.Domain.Model;
 using ZenDrivers.API.Recruiters.Resources.Update;
 

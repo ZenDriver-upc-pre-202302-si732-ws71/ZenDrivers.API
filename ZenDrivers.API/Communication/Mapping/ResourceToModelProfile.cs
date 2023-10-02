@@ -10,7 +10,11 @@ public class ResourceToModelProfile : Profile
     public ResourceToModelProfile()
     {
         CreateMap<MessageSaveResource, Message>();
+        CreateMap<LikeSaveResource, Like>();
+        CreateMap<CommentSaveResource, Comment>();
 
         CreateMap<MessageUpdateResource, Message>();
+        CreateMap<LikeUpdateResource, Like>();
+        CreateMap<CommentUpdateResource, Comment>();
     }
 }
