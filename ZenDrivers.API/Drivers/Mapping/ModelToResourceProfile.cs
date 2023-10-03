@@ -11,6 +11,7 @@ public class ModelToResourceProfile: Profile
     public ModelToResourceProfile()
     {
         CreateMap<Driver, DriverResource>();
+        CreateMap<Driver, DriverSimpleResource>();
         CreateMap<License, LicenseResource>();
         CreateMap<LicenseCategory, LicenseCategoryResource>();
         CreateMap<DriverExperience, DriverExperienceResource>();

@@ -4,11 +4,8 @@ using ZenDrivers.API.Shared.Domain.Models;
 
 namespace ZenDrivers.API.Drivers.Resources;
 
-public class DriverResource : IBaseEntity<int>
+public class DriverResource : DriverSimpleResource
 {
-    public int Id { get; set; }
-    public string Address { get; set; } = null!;
-    
-    public DateTime Birth { get; set; }
-    public AccountSimpleResource Account { get; set; } = null!;
+   public IEnumerable<LicenseResource> Licenses { get; set; } = null!;
+   public IEnumerable<DriverExperienceResource> Experiences { get; set; } = null!;
 }

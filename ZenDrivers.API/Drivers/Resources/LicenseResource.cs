@@ -1,6 +1,4 @@
-﻿using ZenDrivers.API.Drivers.Domain.Model;
-using ZenDrivers.API.Security.Resources;
-using ZenDrivers.API.Shared.Domain.Models;
+﻿using ZenDrivers.API.Shared.Domain.Models;
 
 namespace ZenDrivers.API.Drivers.Resources;
 
@@ -12,6 +10,6 @@ public class LicenseResource : IBaseEntity<int>
     
     public LicenseCategoryResource Category { get; set; } = null!;
 
-    public DriverResource Driver { get; set; } = null!;
+    public DriverSimpleResource Driver { get; set; } = null!;
 
 }

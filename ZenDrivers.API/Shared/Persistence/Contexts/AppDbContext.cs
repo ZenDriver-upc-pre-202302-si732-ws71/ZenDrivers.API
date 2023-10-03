@@ -69,6 +69,8 @@ public class AppDbContext : DbContext
             e.Property(d => d.Address);
             e.Property(d => d.Birth).HasDefaultValue(DateTime.Now);
             e.Navigation(d => d.Account).AutoInclude();
+            e.Navigation(d => d.Experiences).AutoInclude();
+            e.Navigation(d => d.Licenses).AutoInclude();
         });
         
         builder.Entity<Post>(e =>
@@ -154,7 +156,7 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Driver>()
-            .HasMany<License>()
+            .HasMany(d=> d.Licenses)
             .WithOne(l => l.Driver)
             .HasForeignKey(l => l.DriverId);
         
@@ -182,7 +184,7 @@ public class AppDbContext : DbContext
             .HasForeignKey(u => u.CompanyId);
 
         builder.Entity<Driver>()
-            .HasMany<DriverExperience>()
+            .HasMany(d => d.Experiences)
             .WithOne(e => e.Driver)
             .HasForeignKey(e => e.DriverId)
             .OnDelete(DeleteBehavior.Cascade);

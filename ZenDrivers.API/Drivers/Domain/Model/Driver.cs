@@ -7,5 +7,7 @@ namespace ZenDrivers.API.Drivers.Domain.Model;
 public class Driver : DriverResource
 {
     public new Account Account { get; set; } = null!;
+    public new IEnumerable<License> Licenses { get; set; } = null!;
+    public new IEnumerable<DriverExperience> Experiences { get; set; } = null!;
     public int AccountId { get; set; }
 }
