@@ -10,7 +10,4 @@ public class MessageResource : IBaseEntity<int>
     public int Id { get; set; }
     public string Content { get; set; } = null!;
     public DateTime Date { get; set; }
-    
-    public AccountResource Receiver { get; set; } = null!;
-    public AccountResource Sender { get; set; } = null!;
 }

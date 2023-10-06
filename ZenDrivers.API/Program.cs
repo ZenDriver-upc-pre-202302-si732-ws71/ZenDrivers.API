@@ -147,6 +147,11 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IGenericMap<Comment, Comment>, CommentMap>();
 
+
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+builder.Services.AddScoped<IConversationService, ConversationService>();
+builder.Services.AddScoped<IGenericMap<Conversation, Conversation>, ConversationMap>();
+
 //AutoMapper Configuration
 
 builder.Services.AddAutoMapper(

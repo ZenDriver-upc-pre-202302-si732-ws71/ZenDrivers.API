@@ -23,6 +23,7 @@ public class AppDbContext : DbContext
     public DbSet<Like> PostLikes { get; set; }
     public DbSet<LicenseCategory> LicenseCategories { get; set; }
     public DbSet<Comment> PostsComments { get; set; }
+    public DbSet<Conversation> Conversations { get; set; }
     
     public AppDbContext(DbContextOptions options) : base (options)
     {
@@ -120,6 +121,7 @@ public class AppDbContext : DbContext
             e.Property(d => d.Description).IsRequired();
             e.Property(d => d.StartDate).IsRequired();
             e.Property(d => d.EndDate).IsRequired();
+            e.Navigation(d => d.Driver).AutoInclude();
         });
 
         builder.Entity<Message>(e =>
@@ -146,6 +148,15 @@ public class AppDbContext : DbContext
             e.Property(c => c.Date);
             e.Navigation(c => c.Post).AutoInclude();
             e.Navigation(c => c.Account).AutoInclude();
+        });
+        
+        builder.Entity<Conversation>(e =>
+        {
+            e.ToTable("Conversations");
+            e.HasKey(c => c.Id);
+            e.Navigation(c => c.Receiver).AutoInclude();
+            e.Navigation(c => c.Sender).AutoInclude();
+            e.Navigation(c => c.Messages).AutoInclude();
         });
         
         // Relations
@@ -190,15 +201,21 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.Entity<Account>()
-            .HasMany<Message>()
+            .HasMany<Conversation>()
             .WithOne(m => m.Receiver)
             .HasForeignKey(m => m.ReceiverId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Account>()
-            .HasMany<Message>()
+            .HasMany<Conversation>()
             .WithOne(m => m.Sender)
             .HasForeignKey(m => m.SenderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Conversation>()
+            .HasMany(c => c.Messages)
+            .WithOne()
+            .HasForeignKey(m => m.ConversationId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Account>()

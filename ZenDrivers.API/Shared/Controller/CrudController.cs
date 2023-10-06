@@ -42,6 +42,30 @@ public class CrudController<TEntity, TId, TResource, TSaveResource, TUpdateResou
         return Mapper.Map<TUpdateResource, TEntity>(resource);
     }
     
+    protected async Task<IActionResult> PostEntityAsync(TEntity? entity)
+    {
+        var result = await CrudService.SaveAsync(entity!);
+        if (!result.Success)
+            return BadRequestResponse(result.Message);
+
+        var entityResource = FromEntityToResource(result.Resource);
+
+        return Created(nameof(PostAsync), entityResource);
+    }
+    
+    protected async Task<IActionResult> PutEntityAsync(TId id, TEntity? entity)
+    {
+        var result = await CrudService.UpdateAsync(id, entity!);
+
+        if (!result.Success)
+            return BadRequest(result.Message);
+
+        var entityResource = FromEntityToResource(result.Resource);
+
+        return Ok(entityResource);
+    }
+    
+    
     public virtual async Task<IEnumerable<TResource>> GetAllAsync()
     {
         var entities = await CrudService.ListAsync();
@@ -49,6 +73,7 @@ public class CrudController<TEntity, TId, TResource, TSaveResource, TUpdateResou
 
         return resources;
     }
+    
     public virtual async Task<IActionResult> GetByIdAsync(TId id)
     {
         var result = await CrudService.FindByIdAsync(id);
@@ -59,6 +84,7 @@ public class CrudController<TEntity, TId, TResource, TSaveResource, TUpdateResou
 
         return Ok(entityResource);
     }
+    
     public virtual async Task<IActionResult> PostAsync([FromBody] TSaveResource resource)
     {
         if (!ModelState.IsValid)
@@ -66,29 +92,18 @@ public class CrudController<TEntity, TId, TResource, TSaveResource, TUpdateResou
 
         var entity = FromSaveResourceToEntity(resource);
 
-        var result = await CrudService.SaveAsync(entity!);
-        if (!result.Success)
-            return BadRequestResponse(result.Message);
-
-        var entityResource = FromEntityToResource(result.Resource);
-
-        return Created(nameof(PostAsync), entityResource);
+        return await PostEntityAsync(entity);
     }
+    
     public virtual async Task<IActionResult> PutAsync(TId id, [FromBody] TUpdateResource resource)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState.GetErrorMessages());
 
         var entity = FromUpdateResourceToEntity(resource);
-        var result = await CrudService.UpdateAsync(id, entity!);
-
-        if (!result.Success)
-            return BadRequest(result.Message);
-
-        var entityResource = FromEntityToResource(result.Resource);
-
-        return Ok(entityResource);
+        return await PutEntityAsync(id, entity);
     }
+    
     public virtual async Task<IActionResult> DeleteAsync(TId id)
     {
         var result = await CrudService.DeleteAsync(id);

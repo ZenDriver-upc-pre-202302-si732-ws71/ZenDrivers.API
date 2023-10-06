@@ -9,25 +9,10 @@ namespace ZenDrivers.API.Communication.Services;
 
 public class MessageService : CrudService<Message, int>, IMessageService
 {
-    private readonly IMessageRepository _messageRepository;
-    public MessageService(IMessageRepository messageRepository, IUnitOfWork unitOfWork, IGenericMap<Message, Message> genericMap) : base(messageRepository, unitOfWork, genericMap)
-    {
-        _messageRepository = messageRepository;
-    }
-
-
-    public async Task<IEnumerable<Message>> FindByReceiverUsernameAsync(string receiverUsername)
-    {
-        return await _messageRepository.FindByReceiverUsernameAsync(receiverUsername);
-    }
-
-    public async Task<IEnumerable<Message>> FindBySenderUsernameAsync(string senderUsername)
-    {
-        return await _messageRepository.FindBySenderUsernameAsync(senderUsername);
-    }
-
-    public async Task<IEnumerable<Message>> FindByReceiverAndSenderUsernameAsync(string receiverUsername, string senderUsername)
-    {
-        return await _messageRepository.FindByReceiverAndSenderUsernameAsync(receiverUsername, senderUsername);
-    }
+    public MessageService(
+        IMessageRepository messageRepository, 
+        IUnitOfWork unitOfWork, 
+        IGenericMap<Message, Message> genericMap) : base(messageRepository, unitOfWork, genericMap)
+    {}
+   
 }

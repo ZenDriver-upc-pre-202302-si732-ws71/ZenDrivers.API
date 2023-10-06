@@ -6,7 +6,7 @@
         {
             Success = false;
             Message = message;
-            Resource = default;
+            Resource = default!;
         }
 
         protected BaseResponse(T resource)

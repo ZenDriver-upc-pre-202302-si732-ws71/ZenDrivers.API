@@ -12,9 +12,9 @@ public class ModelToResourceProfile : Profile
         CreateMap<Message, MessageResource>();
         CreateMap<Like, LikeResource>();
         CreateMap<Comment, CommentResource>();
+        CreateMap<Conversation, ConversationResource>();
 
         CreateMap<Message, MessageUpdateResource>();
-        CreateMap<Like, LikeUpdateResource>();
         CreateMap<Comment, CommentUpdateResource>();
     }
 }

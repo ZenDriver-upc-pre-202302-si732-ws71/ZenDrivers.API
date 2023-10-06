@@ -7,5 +7,6 @@ public class AccountSimpleResource
     public string Lastname { get; set; } = null!;
     public string Username { get; set; } = null!;
     public string Phone { get; set; } = null!;
+    public string Role { get; set; } = null!;
     public string? ImageUrl { get; set; }
 }

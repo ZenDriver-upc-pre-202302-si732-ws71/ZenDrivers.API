@@ -11,6 +11,7 @@ using ZenDrivers.API.Security.Domain.Models;
 using ZenDrivers.API.Security.Domain.Services;
 using ZenDrivers.API.Security.Exceptions;
 using ZenDrivers.API.Shared.Controller;
+using ZenDrivers.API.Shared.Extensions;
 
 namespace ZenDrivers.API.Communication.Controllers;
 
@@ -19,46 +20,23 @@ namespace ZenDrivers.API.Communication.Controllers;
 [Route("api/v1/[controller]")]
 public class MessagesController : CrudController<Message, int, MessageResource, MessageSaveResource, MessageUpdateResource>
 {
-    private readonly IAccountService _accountService;
     private readonly IMessageService _messageService;
-    public MessagesController(IMessageService messageService, IAccountService accountService, IMapper mapper) : base(messageService, mapper)
+    private readonly IAccountService _accountService;
+    private readonly IConversationService _conversationService;
+    public MessagesController(IMessageService messageService, IMapper mapper, IConversationService conversationService, IAccountService accountService) : base(messageService, mapper)
     {
         _messageService = messageService;
+        _conversationService = conversationService;
         _accountService = accountService;
     }
 
-    private Account GetAccountByUsername(string username, string exception)
-    {
-        var account = _accountService.FindByUsername(username);
-        if (account == null)
-            throw new AppException($"{exception} username is not a valid");
-        return account;
-    }
-    
-    protected override Message? FromSaveResourceToEntity(MessageSaveResource resource)
-    {
-        var entity = base.FromSaveResourceToEntity(resource);
-        if (entity == null) 
-            return entity;
-        
-        var account = GetAccountByUsername(resource.ReceiverUsername, "Receiver");
-        entity.ReceiverId = account.Id;
-        account = HttpContext.Items["User"] as Account;
-        
-        if (account == null)
-            throw new AppException("Sender Account is not valid");
-        
-        entity.SenderId = account.Id;
-        return entity;
-    }
-
-    [HttpGet]
+    [NonAction]
     public override async Task<IEnumerable<MessageResource>> GetAllAsync()
     {
         return await base.GetAllAsync();
     }
 
-    [HttpGet("{id:int}")]
+    [NonAction]
     public override async Task<IActionResult> GetByIdAsync(int id)
     {
         return await base.GetByIdAsync(id);
@@ -67,7 +45,30 @@ public class MessagesController : CrudController<Message, int, MessageResource, 
     [HttpPost]
     public override async Task<IActionResult> PostAsync(MessageSaveResource resource)
     {
-        return await base.PostAsync(resource);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState.GetErrorMessages());
+        var entity = FromSaveResourceToEntity(resource);
+        if (HttpContext.Items["User"] is not Account account || entity == null) 
+            return await PostEntityAsync(entity);
+        
+        var conversation = await _conversationService.FindByUsernamesAsync(account.Username, resource.ReceiverUsername);
+        if (!conversation.Success)
+        {
+            var receiver = await _accountService.FindByUsernameAsync(resource.ReceiverUsername);
+            if (receiver == null)
+                return BadRequestResponse("User receiver doesnt exist");
+            conversation = await _conversationService.SaveAsync(new Conversation {
+                SenderId = account.Id,
+                ReceiverId = receiver.Id
+            });
+        }
+
+        if (!conversation.Success)
+            return BadRequestResponse(conversation.Message);
+
+        entity.ConversationId = conversation.Resource.Id;
+        
+        return await PostEntityAsync(entity);
     }
 
     [HttpPut("{id:int}")]
@@ -81,23 +82,5 @@ public class MessagesController : CrudController<Message, int, MessageResource, 
     {
         return await base.DeleteAsync(id);
     }
-
-    [HttpGet("receiver/{receiverUsername}")]
-    public async Task<IEnumerable<MessageResource>> GetByReceiverUsername(string receiverUsername)
-    {
-        return await _messageService.FindByReceiverUsernameAsync(receiverUsername);
-    }
-
-    [HttpGet("sender/{senderUsername}")]
-    public async Task<IEnumerable<MessageResource>> GetBySenderUsername(string senderUsername)
-    {
-        return await _messageService.FindBySenderUsernameAsync(senderUsername);
-    }
-
-    [HttpGet("conversation")]
-    public async Task<IEnumerable<MessageResource>> GetConversation(ConversationRequest request)
-    {
-        return await _messageService.FindByReceiverAndSenderUsernameAsync(request.ReceiverUsername,
-            request.SenderUsername);
-    }
+    
 }

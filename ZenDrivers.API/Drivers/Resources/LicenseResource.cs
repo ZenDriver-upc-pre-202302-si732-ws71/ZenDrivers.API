@@ -10,6 +10,4 @@ public class LicenseResource : IBaseEntity<int>
     
     public LicenseCategoryResource Category { get; set; } = null!;
 
-    public DriverSimpleResource Driver { get; set; } = null!;
-
 }

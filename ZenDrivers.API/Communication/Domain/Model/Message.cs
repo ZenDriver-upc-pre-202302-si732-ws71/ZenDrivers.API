@@ -11,8 +11,6 @@ public class Message : MessageResource
     {
         Date = DateTime.Now;
     }
-    public new Account Receiver { get; set; } = null!;
-    public int ReceiverId { get; set; }
-    public new Account Sender { get; set; } = null!;
-    public int SenderId { get; set; }
+    
+    public int ConversationId { get; set; }
 }
