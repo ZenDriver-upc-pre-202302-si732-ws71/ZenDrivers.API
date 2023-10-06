@@ -16,5 +16,4 @@ public interface IAccountService
     
     Task<Account?> FindByUsernameAsync(string username);
     Task<IEnumerable<Account>> FindByUserRoleAsync(UserType role);
-    Account? FindByUsername(string username);
 }

@@ -38,10 +38,6 @@ public class AccountRepository : BaseRepository, IAccountRepository
         return await _context.Accounts.Where(a => a.Role == role).ToListAsync();
     }
 
-    public Account? FindByUsername(string username)
-    {
-        return _context.Accounts.SingleOrDefault(a => a.Username == username);
-    }
 
     public Account? FindById(int id)
     {

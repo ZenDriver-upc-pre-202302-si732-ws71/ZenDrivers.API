@@ -11,7 +11,6 @@ public interface IAccountRepository
 
     Task<IEnumerable<Account>> FindByUserRoleAsync(UserType role);
     
-    Account? FindByUsername(string username);
     public bool ExistsByUsername(string username);
     Account? FindById(int id);
     void Update(Account account);

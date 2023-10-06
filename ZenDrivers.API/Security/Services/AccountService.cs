@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using ZenDrivers.API.Recruiters.Domain.Model;
 using ZenDrivers.API.Security.Authorization.Handlers.Interfaces;
 using ZenDrivers.API.Security.Domain.Models;
 using ZenDrivers.API.Security.Domain.Repositories;
@@ -175,10 +173,6 @@ public class AccountService : IAccountService
         return await _accountRepository.FindByUserRoleAsync(role);
     }
 
-    public Account? FindByUsername(string username)
-    {
-        return _accountRepository.FindByUsername(username);
-    }
 
     //helper methods
     private Account GetById(int id)
@@ -187,11 +181,5 @@ public class AccountService : IAccountService
         if (user == null) throw new KeyNotFoundException("User not found");
         return user;
     }
-
-    private Account GetByUsername(string username)
-    {
-        var account = _accountRepository.FindByUsername(username);
-        if (account == null) throw new KeyNotFoundException("User not found");
-        return account;
-    }
+    
 }

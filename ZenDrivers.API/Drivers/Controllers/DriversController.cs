@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using ZenDrivers.API.Drivers.Domain.Model;
+using ZenDrivers.API.Drivers.Domain.Repositories.Communication;
 using ZenDrivers.API.Drivers.Domain.Services;
 using ZenDrivers.API.Drivers.Resources;
 using ZenDrivers.API.Drivers.Resources.Requests;
@@ -9,7 +10,6 @@ using ZenDrivers.API.Drivers.Resources.Save;
 using ZenDrivers.API.Drivers.Resources.Update;
 using ZenDrivers.API.Security.Authorization.Attributes;
 using ZenDrivers.API.Security.Domain.Services;
-using ZenDrivers.API.Security.Resources;
 using ZenDrivers.API.Shared.Controller;
 using ZenDrivers.API.Shared.Domain.Enums;
 
@@ -61,25 +61,20 @@ public class DriversController : CrudController<Driver, int, DriverResource, Dri
     [HttpPost("find")]
     public async Task<IEnumerable<DriverResource>> FindDriverBy([FromBody] FindDriverRequest request)
     {
-        var drivers = await _accountService.FindByUserRoleAsync(UserType.Driver);
-        var resources = new List<DriverResource>();
-        foreach (var driver in drivers)
+        var drivers = await _driverService.FindDriversBy(new FindDriver
         {
-            var experiences = await _driverExperienceService.FindAllByDriverIdAsync(driver.Driver!.Id);
-            var licenses = await _licenseService.FindByDriverIdAsync(driver.Driver!.Id);
+            LicenseCategoryName = request.CategoryName,
+            YearsOfExperience = request.YearsOfExperience
+        });
 
-            if (!licenses.IsNullOrEmpty() && (experiences.Any(e => e.YearsOfExperience() >= request.YearsOfExperience) || request.YearsOfExperience == 0))
-                resources.Add(Mapper.Map<DriverResource>(driver.Driver));
-        }
-
-        return resources;
+        return Mapper.Map<IEnumerable<DriverResource>>(drivers);
     }
 
-    [HttpGet("username/{username}")]
+    [HttpGet("user/{username}")]
     public async Task<IActionResult> FindDriverByUsernameAsync(string username)
     {
         var response = await _driverService.FindDriverByUsernameAsync(username);
 
-        return response.Success ? Ok(response.Resource) : BadRequestResponse(response.Message);
+        return response.Success ? Ok(FromEntityToResource(response.Resource)) : BadRequestResponse(response.Message);
     }
 }
