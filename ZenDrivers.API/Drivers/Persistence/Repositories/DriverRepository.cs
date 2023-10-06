@@ -11,4 +11,7 @@ public class DriverRepository : CrudRepository<Driver, int>, IDriverRepository
     public DriverRepository(AppDbContext context) : base(context.Drivers)
     {
     }
+
+    public async Task<Driver?> FindDriverByUsernameAsync(string username) =>
+        await DataSet.Where(d => d.Account.Username == username).FirstOrDefaultAsync();
 }

@@ -74,4 +74,12 @@ public class DriversController : CrudController<Driver, int, DriverResource, Dri
 
         return resources;
     }
+
+    [HttpGet("username/{username}")]
+    public async Task<IActionResult> FindDriverByUsernameAsync(string username)
+    {
+        var response = await _driverService.FindDriverByUsernameAsync(username);
+
+        return response.Success ? Ok(response.Resource) : BadRequestResponse(response.Message);
+    }
 }

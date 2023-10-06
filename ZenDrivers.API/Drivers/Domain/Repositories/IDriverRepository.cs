@@ -6,4 +6,5 @@ namespace ZenDrivers.API.Drivers.Domain.Repositories;
 
 public interface IDriverRepository : ICrudRepository<Driver, int>
 {
+    Task<Driver?> FindDriverByUsernameAsync(string username);
 }
