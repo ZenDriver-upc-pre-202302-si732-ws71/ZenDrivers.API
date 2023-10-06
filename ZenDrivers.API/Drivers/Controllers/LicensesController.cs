@@ -9,6 +9,7 @@ using ZenDrivers.API.Security.Authorization.Attributes;
 using ZenDrivers.API.Security.Domain.Models;
 using ZenDrivers.API.Shared.Controller;
 using ZenDrivers.API.Shared.Domain.Enums;
+using ZenDrivers.API.Shared.Extensions;
 
 namespace ZenDrivers.API.Drivers.Controllers;
 
@@ -42,10 +43,10 @@ public class LicensesController : CrudController<License, int, LicenseResource, 
         var entity =  base.FromSaveResourceToEntity(resource);
         if (entity == null)
             return entity;
+        
         if (HttpContext.Items["User"] is Account account)
             entity.DriverId = account.Driver!.Id;
-        if(_licenseCategoryService.FindById(resource.CategoryId) is { } category)
-            entity.Category = category;
+        
         return entity;
     }
 
@@ -53,7 +54,17 @@ public class LicensesController : CrudController<License, int, LicenseResource, 
     [HttpPost]
     public override async Task<IActionResult> PostAsync(LicenseSaveResource resource)
     {
-        return await base.PostAsync(resource);
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState.GetErrorMessages());
+        var entity = FromSaveResourceToEntity(resource);
+        if (entity == null) return await base.PostAsync(resource);
+        
+        var category = await _licenseCategoryService.FindByIdAsync(resource.CategoryId);
+        if (!category.Success)
+            return BadRequestResponse(category.Message);
+        entity.CategoryId = category.Resource.Id;
+
+        return await PostEntityAsync(entity);
     }
 
     [HttpDelete("{id:int}")]

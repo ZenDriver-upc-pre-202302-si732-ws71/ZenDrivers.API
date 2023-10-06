@@ -10,7 +10,7 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 {
     private readonly UserType[] _allowUserTypes;
 
-    public AuthorizeAttribute() => _allowUserTypes = new []{ UserType.Driver, UserType.Recruiter };
+    public AuthorizeAttribute() : this(UserType.Driver, UserType.Recruiter) {}
     public AuthorizeAttribute(params UserType[] allowUserTypes) => _allowUserTypes = allowUserTypes;
     
     public void OnAuthorization(AuthorizationFilterContext context)

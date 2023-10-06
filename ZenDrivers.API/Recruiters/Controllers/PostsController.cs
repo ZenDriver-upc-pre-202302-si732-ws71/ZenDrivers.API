@@ -33,9 +33,7 @@ public class PostsController : CrudController<Post, int, PostResource, PostSaveR
     {
         var entity = base.FromSaveResourceToEntity(resource);
         if (HttpContext.Items["User"] is Account account && entity != null)
-        {
             entity.RecruiterId = account.Recruiter!.Id;
-        }
         return entity;
     }
     
