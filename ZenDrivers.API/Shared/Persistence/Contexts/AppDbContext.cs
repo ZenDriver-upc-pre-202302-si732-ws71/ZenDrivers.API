@@ -61,6 +61,7 @@ public class AppDbContext : DbContext
             e.Property(r => r.Description);
             e.Property(r => r.Email).IsRequired();
             e.Navigation(r => r.Account).AutoInclude();
+            e.Navigation(r => r.Company).AutoInclude();
         });
         
         builder.Entity<Driver>(e =>
@@ -130,6 +131,7 @@ public class AppDbContext : DbContext
             e.HasKey(m => m.Id);
             e.Property(m => m.Content).IsRequired();
             e.Property(m => m.Date);
+            e.Navigation(m => m.Account).AutoInclude();
         });
 
         builder.Entity<Like>(e =>
@@ -190,7 +192,7 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Recruiter>()
-            .HasOne<Company>()
+            .HasOne(r => r.Company)
             .WithMany()
             .HasForeignKey(u => u.CompanyId);
 
@@ -204,6 +206,12 @@ public class AppDbContext : DbContext
             .HasMany<Conversation>()
             .WithOne(m => m.Receiver)
             .HasForeignKey(m => m.ReceiverId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Account>()
+            .HasMany<Message>()
+            .WithOne(m => m.Account)
+            .HasForeignKey(m => m.AccountId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Account>()

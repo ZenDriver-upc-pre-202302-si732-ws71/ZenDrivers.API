@@ -13,4 +13,8 @@ public class Message : MessageResource
     }
     
     public int ConversationId { get; set; }
+    
+    public int AccountId { get; set; }
+
+    public new Account Account { get; set; } = null!;
 }

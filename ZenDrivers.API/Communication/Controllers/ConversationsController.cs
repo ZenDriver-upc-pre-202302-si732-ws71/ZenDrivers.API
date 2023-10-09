@@ -11,7 +11,7 @@ using ZenDrivers.API.Shared.Controller;
 namespace ZenDrivers.API.Communication.Controllers;
 
 [Authorize]
-[Controller]
+[ApiController]
 [Route("api/v1/[controller]")]
 public class ConversationsController : CrudController<Conversation, int, ConversationResource, ConversationSaveResource, ConversationUpdateResource>
 {
@@ -53,7 +53,7 @@ public class ConversationsController : CrudController<Conversation, int, Convers
 
     [HttpGet("user/{username}")]
     public async Task<IEnumerable<ConversationResource>> GetByUsernameAsync(string username) =>
-        await _conversationService.FindByUsernameAsync(username);
+        Mapper.Map<IEnumerable<ConversationResource>>(await _conversationService.FindByUsernameAsync(username));
 
 
     [HttpGet("user/")]

@@ -65,7 +65,8 @@ public class MessagesController : CrudController<Message, int, MessageResource, 
 
         if (!conversation.Success)
             return BadRequestResponse(conversation.Message);
-
+        
+        entity.AccountId = account.Id;
         entity.ConversationId = conversation.Resource.Id;
         
         return await PostEntityAsync(entity);

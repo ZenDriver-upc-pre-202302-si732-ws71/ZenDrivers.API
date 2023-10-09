@@ -7,7 +7,8 @@ public class RecruiterResource : IBaseEntity<int>
 {
     public int Id { get; set; }
     public string Email { get; set; } = null!;
-    public string? Description { get; set; } = null!;
-    public int CompanyId { get; set; }
+    public string? Description { get; set; }
+    
+    public CompanyResource Company { get; set; } = null!;
     public AccountSimpleResource Account { get; set; } = null!;
 }
