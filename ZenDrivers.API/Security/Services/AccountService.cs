@@ -7,6 +7,7 @@ using ZenDrivers.API.Security.Domain.Services.Communication;
 using ZenDrivers.API.Security.Exceptions;
 using ZenDrivers.API.Shared.Domain.Enums;
 using ZenDrivers.API.Shared.Domain.Repositories;
+using ZenDrivers.API.Shared.Domain.Services.Communication;
 using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace ZenDrivers.API.Security.Services;
@@ -191,16 +192,14 @@ public class AccountService : IAccountService
         }
     }
 
-    public async Task<Account?> FindByUsernameAsync(string username)
+    public async Task<BaseResponse<Account>> FindByUsernameAsync(string username)
     {
-        return await _accountRepository.FindByUsernameAsync(username);
-    }
+        var account = await _accountRepository.FindByUsernameAsync(username);
 
-    public async Task<IEnumerable<Account>> FindByUserRoleAsync(UserType role)
-    {
-        return await _accountRepository.FindByUserRoleAsync(role);
+        return account != null
+            ? BaseResponse<Account>.Of(account)
+            : BaseResponse<Account>.Of($"User with username {username} doesnt exist");
     }
-
 
     //helper methods
     private Account GetById(int id)

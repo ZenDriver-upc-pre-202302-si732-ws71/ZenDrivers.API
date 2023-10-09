@@ -55,11 +55,11 @@ public class MessagesController : CrudController<Message, int, MessageResource, 
         if (!conversation.Success)
         {
             var receiver = await _accountService.FindByUsernameAsync(resource.ReceiverUsername);
-            if (receiver == null)
+            if (!receiver.Success)
                 return BadRequestResponse("User receiver doesnt exist");
             conversation = await _conversationService.SaveAsync(new Conversation {
                 SenderId = account.Id,
-                ReceiverId = receiver.Id
+                ReceiverId = receiver.Resource.Id
             });
         }
 

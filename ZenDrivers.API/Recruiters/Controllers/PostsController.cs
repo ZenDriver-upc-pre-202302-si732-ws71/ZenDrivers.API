@@ -71,10 +71,10 @@ public class PostsController : CrudController<Post, int, PostResource, PostSaveR
     public async Task<IEnumerable<PostResource>> GetByRecruiterUsername(string recruiterUsername)
     {
         var account = await _accountService.FindByUsernameAsync(recruiterUsername);
-        if (account is not { Role: UserType.Recruiter })
+        if (account is { Success: false, Resource: not { Role: UserType.Recruiter } })
             return ImmutableList<PostResource>.Empty;
         
-        var result = await _postService.FindPostsByRecruiterId(account.Recruiter!.Id);
+        var result = await _postService.FindPostsByRecruiterId(account.Resource.Recruiter!.Id);
         return result.Select(p => FromEntityToResource(p)!);
     }
 }

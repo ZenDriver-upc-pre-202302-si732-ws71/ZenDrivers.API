@@ -15,7 +15,5 @@ public interface IAccountService
     Task RegisterAsync(RegisterRequest model);
     Task UpdateAsync(int id, UpdateRequest model);
     Task DeleteAsync(int id);
-    
-    Task<Account?> FindByUsernameAsync(string username);
-    Task<IEnumerable<Account>> FindByUserRoleAsync(UserType role);
+    Task<BaseResponse<Account>> FindByUsernameAsync(string username);
 }

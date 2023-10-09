@@ -71,9 +71,9 @@ public class DriverExperiencesController : CrudController<DriverExperience, int,
     public async Task<IEnumerable<DriverExperienceResource>> GetByDriverUsername(string driverUsername)
     {
         var user = await _accountService.FindByUsernameAsync(driverUsername);
-        if (user is not { Role: UserType.Driver })
+        if (user is { Success: false, Resource: not { Role: UserType.Driver }})
             return Array.Empty<DriverExperienceResource>();
-        return await _driverExperienceService.FindAllByDriverIdAsync(user.Driver!.Id);
+        return await _driverExperienceService.FindAllByDriverIdAsync(user.Resource.Driver!.Id);
     }
     
 }

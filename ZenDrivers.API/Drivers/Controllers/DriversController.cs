@@ -21,15 +21,9 @@ namespace ZenDrivers.API.Drivers.Controllers;
 public class DriversController : CrudController<Driver, int, DriverResource, DriverSaveResource, DriverUpdateResource>
 {
     private readonly IDriverService _driverService;
-    private readonly IAccountService _accountService;
-    private readonly IDriverExperienceService _driverExperienceService;
-    private readonly ILicenseService _licenseService;
     public DriversController(IDriverService driverService, IAccountService accountService, IDriverExperienceService driverExperienceService, IMapper mapper, ILicenseService licenseService) : base(driverService, mapper)
     {
         _driverService = driverService;
-        _accountService = accountService;
-        _driverExperienceService = driverExperienceService;
-        _licenseService = licenseService;
     }
     
     [HttpGet]

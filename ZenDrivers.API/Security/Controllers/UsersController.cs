@@ -88,6 +88,14 @@ public class UsersController : ControllerBase
     {
         await _accountService.DeleteAsync(id);
         return Ok(new { message = "User deleted succesfully" });
-    }  
+    }
+
+    [HttpGet("search/")]
+    public async Task<IActionResult> FindByUsernameAsync([FromQuery] string username)
+    {
+        var response = await _accountService.FindByUsernameAsync(username);
+
+        return response.Success ? Ok(_mapper.Map<AccountResource>(response.Resource)) : BadRequest(ErrorResponse.Of(response.Message));
+    }
     
 }
