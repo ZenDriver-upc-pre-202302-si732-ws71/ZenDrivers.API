@@ -29,7 +29,7 @@ public class JwtHandler : IJwtHandler
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Sid, account.Id.ToString()),
-                new Claim(ClaimTypes.Name, account.Username)
+                new Claim(ClaimTypes.Name, account.Username),
             }),
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials = new SigningCredentials(

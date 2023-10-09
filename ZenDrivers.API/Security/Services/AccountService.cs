@@ -27,6 +27,14 @@ public class AccountService : IAccountService
         _unitOfWork = unitOfWork;
     }
 
+    private AuthenticateResponse CredentialsResponse(Account user)
+    {
+        var response = _mapper.Map<AuthenticateResponse>(user);
+        response.Token = _jwtHandler.GenerateToken(user);
+        
+        return response;
+    }
+
     public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest request)
     {
         var user = await _accountRepository.FindByUsernameAsync(request.Username);
@@ -35,10 +43,31 @@ public class AccountService : IAccountService
         {
             throw new AppException("Username or password is incorrect");
         }
-        var response = _mapper.Map<AuthenticateResponse>(user);
-        response.Token = _jwtHandler.GenerateToken(user);
-        
-        return response;
+
+        return CredentialsResponse(user);
+    }
+
+    public async Task<AuthenticateResponse> ChangePassword(string username, ChangePasswordRequest request)
+    {
+        if (await _accountRepository.FindByUsernameAsync(username) is not { } user ||
+            !BCryptNet.Verify(request.CurrentPassword, user.PasswordHash))
+        {
+            throw new AppException("Username or current password is incorrect");
+        }
+
+        user.PasswordHash = BCryptNet.HashPassword(request.NewPassword);
+
+        try
+        {
+            _accountRepository.Update(user);
+            await _unitOfWork.CompleteAsync();
+        }
+        catch (Exception e)
+        {
+            throw new AppException($"An error ocurred while updating the user password: {e.Message}");
+        }
+
+        return CredentialsResponse(user);
     }
 
     public async Task<Account?>  ValidateAsync(ValidationRequest request)
@@ -115,8 +144,7 @@ public class AccountService : IAccountService
         //if(_userRepository.ExistsByUsername(request.Username))
         //    throw new AppException("Username '" + request.Username + "' is already taken");
         // Hash password if it was entered
-        if (!string.IsNullOrEmpty(request.Password))
-            user.PasswordHash = BCryptNet.HashPassword(request.Password);
+        
         
 
         //Copy model to user and save

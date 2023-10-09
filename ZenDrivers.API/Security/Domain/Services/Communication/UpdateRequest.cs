@@ -13,10 +13,9 @@ public class UpdateRequest
 
     public string? Username { get; set; }
 
-    public string? Password { get; set; }
-
     public string? Phone { get; set; }
 
     public RecruiterUpdateResource? Recruiter { get; set; }
+    
     public DriverUpdateResource? Driver { get; set; }
 }

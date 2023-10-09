@@ -49,6 +49,17 @@ public class UsersController : ControllerBase
         return BadRequest(ErrorResponse.Of("Invalid token or username"));
     }
 
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        if (HttpContext.Items["User"] is not Account account)
+            return BadRequest("Invalid credentials");
+
+        var response = await _accountService.ChangePassword(account.Username, request);
+        
+        return Ok(response);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
