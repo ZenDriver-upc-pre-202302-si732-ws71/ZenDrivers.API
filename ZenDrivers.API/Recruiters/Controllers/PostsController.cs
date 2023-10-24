@@ -55,6 +55,9 @@ public class PostsController : CrudController<Post, int, PostResource, PostSaveR
     {
         return await base.GetByIdAsync(id);
     }
+
+    
+
     [HttpPut("{id:int}")]
     public override async Task<IActionResult> PutAsync(int id, PostUpdateResource resource)
     {

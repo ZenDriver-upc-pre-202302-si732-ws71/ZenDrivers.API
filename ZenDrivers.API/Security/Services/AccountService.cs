@@ -155,6 +155,7 @@ public class AccountService : IAccountService
             throw new AppException("Invalid firstname or lastname");
         if (!user.ValidPhone())
             throw new AppException("Invalid phone number");
+        user.ImageUrl = request.ImageUrl;
         
         switch (user.Role)
         {
