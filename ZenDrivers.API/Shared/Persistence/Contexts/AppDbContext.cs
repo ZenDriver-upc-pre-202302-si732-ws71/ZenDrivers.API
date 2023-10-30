@@ -60,6 +60,7 @@ public class AppDbContext : DbContext
             e.HasKey(r => r.Id);
             e.Property(r => r.Description);
             e.Property(r => r.Email).IsRequired();
+            e.Property(r => r.Verified).HasDefaultValue(false);
             e.Navigation(r => r.Account).AutoInclude();
             e.Navigation(r => r.Company).AutoInclude();
         });

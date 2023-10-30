@@ -11,4 +11,6 @@ public class Recruiter : RecruiterResource
     public new Company Company { get; set; } = null!;
     public int AccountId { get; set; }
     public new Account Account { get; set; } = null!;
+    
+    public bool Verified { get; set; }
 }
